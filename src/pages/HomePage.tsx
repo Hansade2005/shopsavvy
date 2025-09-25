@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Truck, ShieldCheck, Headphones, ChevronRight, Star } from 'lucide-react';
+import { ShoppingCart, Truck, ShieldCheck, Headphones, ChevronRight } from 'lucide-react';
 import { FeaturedProducts } from '@/components/FeaturedProducts';
 import { NewsletterSignup } from '@/components/NewsletterSignup';
 
@@ -60,6 +60,21 @@ const testimonials: Testimonial[] = [
  rating:5
  }
 ];
+
+const StarRating = ({ rating }: { rating: number }) => {
+ const filledStars = Math.floor(rating);
+ const hasHalfStar = rating %1 >=0.5;
+
+ return (
+ <div className="flex items-center">
+ {[...Array(5)].map((_, i) => (
+ <span key={i} className="text-yellow-400 text-lg">
+ {i < filledStars ? '★' : i === filledStars && hasHalfStar ? '★' : '☆'}
+ </span>
+ ))}
+ </div>
+ );
+};
 
 export function HomePage() {
  return (
@@ -206,13 +221,7 @@ export function HomePage() {
  className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow"
  >
  <div className="flex items-center mb-4">
- {[...Array(5)].map((_, i) => (
- <Star
- key={i}
- className={`h-5 w-5 ${i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'}`}
- fill={i < testimonial.rating ? 'currentColor' : 'none'}
- />
- ))}
+ <StarRating rating={testimonial.rating} />
  </div>
  <p className="text-gray-600 mb-6 italic">"{testimonial.content}"</p>
  <div className="flex items-center">
