@@ -55,25 +55,26 @@ const testimonials: Testimonial[] = [
  {
  name: 'Emily Rodriguez',
  role: 'Fashion Lover',
- content: 'I found some amazing fashion items here that I didn\'t know existed. The prices are reasonable and the quality is top-notch. Will definitely shop here again.',
+ content: 'I found some amazing fashion items here that I didn't know existed. The prices are reasonable and the quality is top-notch. Will definitely shop here again.',
  avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
  rating:5
  }
 ];
+
 const StarRating = ({ rating }: { rating: number }) => {
-  const filledStars = Math.floor(rating);
+ const filledStars = Math.floor(rating);
+ const hasHalfStar = rating %1 >=0.5;
 
-  return (
-    <div className="flex items-center">
-      {[...Array(5)].map((_, i) => (
-        <span key={i} className="text-yellow-400 text-lg">
-          {i < filledStars ? '★' : '☆'}
-        </span>
-      ))}
-    </div>
-  );
+ return (
+ <div className="flex items-center">
+ {[...Array(5)].map((_, i) => (
+ <span key={i} className="text-yellow-400 text-lg">
+ {i < filledStars ? '★' : i === filledStars && hasHalfStar ? '★' : '☆'}
+ </span>
+ ))}
+ </div>
+ );
 };
-
 
 export function HomePage() {
  return (
@@ -168,7 +169,7 @@ export function HomePage() {
  <ChevronRight className="h-4 w-4 ml-1" />
  </Link>
  </div>
- <FeaturedProducts />
+ <FeaturedProducts title="Featured Products" products={[]} />
  </section>
 
  {/* Categories Section */}

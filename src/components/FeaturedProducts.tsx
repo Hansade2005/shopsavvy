@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { ProductCard } from './ProductCard';
+import { motion } from 'framer-motion';
 
 interface Product {
  id: string;
@@ -14,41 +13,95 @@ interface Product {
  stock: number;
 }
 
+interface ProductCardProps {
+ product: Product;
+ onQuickView: (product: Product) => void;
+ onAddToCart: (product: Product) => void;
+ onAddToWishlist: (product: Product) => void;
+}
+
 interface FeaturedProductsProps {
  title: string;
  products: Product[];
 }
 
-export function FeaturedProducts({ title, products }: FeaturedProductsProps) {
- return (
- <section className="py-16 bg-gray-50">
- <div className="container mx-auto px-4">
- <div className="flex justify-between items-center mb-10">
- <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
- <Link
- to="/products"
- className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
- >
- View All
- <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="002424" xmlns="http://www.w3.org/2000/svg">
- <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M915"></path>
- </svg>
- </Link>
- </div>
+const featuredProducts: Product[] = [
+ {
+ id: '1',
+ name: 'Wireless Headphones',
+ description: 'Premium noise-cancelling wireless headphones with30-hour battery life',
+ price:299.99,
+ imageUrl: 'https://source.unsplash.com/random/400x400/?headphones',
+ category: 'Electronics',
+ rating:4.5,
+ stock:25
+ },
+ {
+ id: '2',
+ name: 'Smart Watch',
+ description: 'Advanced smartwatch with health tracking and fitness features',
+ price:199.99,
+ imageUrl: 'https://source.unsplash.com/random/400x400/?smartwatch',
+ category: 'Electronics',
+ rating:4.2,
+ stock:18
+ },
+ {
+ id: '3',
+ name: 'Bluetooth Speaker',
+ description: 'Portable wireless speaker with20W output and12-hour battery',
+ price:89.99,
+ imageUrl: 'https://source.unsplash.com/random/400x400/?speaker',
+ category: 'Electronics',
+ rating:4.7,
+ stock:32
+ },
+ {
+ id: '4',
+ name: 'Wireless Earbuds',
+ description: 'Compact wireless earbuds with touch controls and6-hour battery',
+ price:129.99,
+ imageUrl: 'https://source.unsplash.com/random/400x400/?earbuds',
+ category: 'Electronics',
+ rating:4.3,
+ stock:45
+ }
+];
 
- <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
- {products.map((product, index) => (
+export function FeaturedProducts({ title = 'Featured Products', products = featuredProducts }: Partial<FeaturedProductsProps>) {
+ const handleQuickView = (product: Product) => {
+ console.log('Quick view:', product.name);
+ };
+
+ const handleAddToCart = (product: Product) => {
+ console.log('Add to cart:', product.name);
+ };
+
+ const handleAddToWishlist = (product: Product) => {
+ console.log('Add to wishlist:', product.name);
+ };
+
+ return (
+ <div className="space-y-8">
+ <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{title}</h2>
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+ {products.map((product) => (
  <motion.div
  key={product.id}
  initial={{ opacity:0, y:20 }}
- animate={{ opacity:1, y:0 }}
- transition={{ duration:0.5, delay:index *0.1 }}
+ whileInView={{ opacity:1, y:0 }}
+ transition={{ duration:0.3 }}
+ viewport={{ once:true }}
  >
- <ProductCard product={product} />
+ <ProductCard
+ product={product}
+ onQuickView={handleQuickView}
+ onAddToCart={handleAddToCart}
+ onAddToWishlist={handleAddToWishlist}
+ />
  </motion.div>
  ))}
  </div>
  </div>
- </section>
  );
 }
