@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
-import { ShoppingBag, Users, Package, DollarSign, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
+import { ShoppingBag, Users, Package, DollarSign, TrendingUp, TrendingDown, AlertCircle, SettingsPage } from 'lucide-react';
 
 interface StatsCardProps {
  title: string;
@@ -32,7 +32,7 @@ function StatsCard({ title, value, change, icon, color }: StatsCardProps) {
  </div>
  )}
  </div>
- <div className={`p-3 rounded-lg ${color}`}>
+ <div className={`p-3 rounded-lg ${color}>
  {icon}
  </div>
  </div>

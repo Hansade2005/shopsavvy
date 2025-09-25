@@ -21,9 +21,9 @@ const navItems: NavItem[] = [
  path: '/admin/products',
  icon: <ShoppingBag className="h-5 w-5" />,
  subItems: [
- { label: 'All Products', path: '/admin/products' },
- { label: 'Add Product', path: '/admin/products/add' },
- { label: 'Categories', path: '/admin/products/categories' }
+ { label: 'All Products', path: '/admin/products', icon: <ShoppingBag className="h-4 w-4" /> },
+ { label: 'Add Product', path: '/admin/products/add', icon: <Plus className="h-4 w-4" /> },
+ { label: 'Categories', path: '/admin/products/categories', icon: <List className="h-4 w-4" /> }
  ]
  },
  {
@@ -31,9 +31,114 @@ const navItems: NavItem[] = [
  path: '/admin/orders',
  icon: <Package className="h-5 w-5" />,
  subItems: [
- { label: 'All Orders', path: '/admin/orders' },
- { label: 'Pending Orders', path: '/admin/orders/pending' },
- { label: 'Completed Orders', path: '/admin/orders/completed' }
+ { label: 'All Orders', path: '/admin/orders', icon: <Package className="h-4 w-4" /> },
+ { label: 'Pending Orders', path: '/admin/orders/pending', icon: <Clock className="h-4 w-4" /> },
+ { label: 'Completed Orders', path: '/admin/orders/completed', icon: <Check className="h-4 w-4" /> }
+ ]
+ },
+ {
+ label: 'Customers',
+ path: '/admin/customers',
+ icon: <Users className="h-5 w-5" />
+ },
+ {
+ label: 'Settings',
+ path: '/admin/settings',
+ icon: <Settings className="h-5 w-5" />
+ }
+ {
+ label: 'Dashboard',
+ path: '/admin/dashboard',
+ icon: <LayoutDashboard className="h-5 w-5" />
+ },
+ {
+ label: 'Products',
+ path: '/admin/products',
+ icon: <ShoppingBag className="h-5 w-5" />,
+ subItems: [
+ { label: 'All Products', path: '/admin/products', icon: <ShoppingBag className="h-4 w-4" /> },
+ { label: 'Add Product', path: '/admin/products/add', icon: <Plus className="h-4 w-4" /> },
+ { label: 'Categories', path: '/admin/products/categories', icon: <List className="h-4 w-4" /> }
+ ]
+ },
+ {
+ label: 'Orders',
+ path: '/admin/orders',
+ icon: <Package className="h-5 w-5" />,
+ subItems: [
+ { label: 'All Orders', path: '/admin/orders', icon: <Package className="h-4 w-4" /> },
+ { label: 'Pending Orders', path: '/admin/orders/pending', icon: <Clock className="h-4 w-4" /> },
+ { label: 'Completed Orders', path: '/admin/orders/completed', icon: <Check className="h-4 w-4" /> }
+ ]
+ },
+ {
+ label: 'Customers',
+ path: '/admin/customers',
+ icon: <Users className="h-5 w-5" />
+ },
+ {
+ label: 'Settings',
+ path: '/admin/settings',
+ icon: <Settings className="h-5 w-5" />
+ }
+ {
+ label: 'Dashboard',
+ path: '/admin/dashboard',
+ icon: <LayoutDashboard className="h-5 w-5" />
+ },
+ {
+ label: 'Products',
+ path: '/admin/products',
+ icon: <ShoppingBag className="h-5 w-5" />,
+ subItems: [
+ { label: 'All Products', path: '/admin/products', icon: <ShoppingBag className="h-4 w-4" /> },
+ { label: 'Add Product', path: '/admin/products/add', icon: <Plus className="h-4 w-4" /> },
+ { label: 'Categories', path: '/admin/products/categories', icon: <List className="h-4 w-4" /> }
+ ]
+ },
+ {
+ label: 'Orders',
+ path: '/admin/orders',
+ icon: <Package className="h-5 w-5" />,
+ subItems: [
+ { label: 'All Orders', path: '/admin/orders', icon: <Package className="h-4 w-4" /> },
+ { label: 'Pending Orders', path: '/admin/orders/pending', icon: <Clock className="h-4 w-4" /> },
+ { label: 'Completed Orders', path: '/admin/orders/completed', icon: <Check className="h-4 w-4" /> }
+ ]
+ },
+ {
+ label: 'Customers',
+ path: '/admin/customers',
+ icon: <Users className="h-5 w-5" />
+ },
+ {
+ label: 'Settings',
+ path: '/admin/settings',
+ icon: <Settings className="h-5 w-5" />
+ }
+ {
+ label: 'Dashboard',
+ path: '/admin/dashboard',
+ icon: <LayoutDashboard className="h-5 w-5" />
+ },
+ {
+ label: 'Products',
+ path: '/admin/products',
+ icon: <ShoppingBag className="h-5 w-5" />,
+ subItems: [
+ { label: 'All Products', path: '/admin/products', icon: <ShoppingBag className="h-4 w-4" /> },
+ { label: 'Add Product', path: '/admin/products/add', icon: <ShoppingBag className="h-4 w-4" /> },
+ { label: 'Categories', path: '/admin/products/categories', icon: <ShoppingBag className="h-4 w-4" /> }
+ ]
+ },
+ {
+ label: 'Orders',
+ path: '/admin/orders',
+ icon: <Package className="h-5 w-5" />,
+ subItems: [
+ { label: 'All Orders', path: '/admin/orders', icon: <Package className="h-4 w-4" /> },
+ { label: 'Pending Orders', path: '/admin/orders/pending', icon: <Package className="h-4 w-4" /> },
+ { label: 'Completed Orders', path: '/admin/orders/completed', icon: <Package className="h-4 w-4" /> }
  ]
  },
  {
@@ -122,6 +227,7 @@ export function AdminLayout() {
  to={subItem.path}
  className="flex items-center px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
  >
+ {subItem.icon}
  <span className="ml-3">{subItem.label}</span>
  </Link>
  </li>

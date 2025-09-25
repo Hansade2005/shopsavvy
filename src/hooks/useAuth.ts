@@ -37,7 +37,12 @@ export function useAuth() {
  if (isSupabaseConfigured) {
  // Use Supabase authentication
  const { data: { session } } = await supabase.auth.getSession();
- setUser(session?.user ?? null);
+ setUser(session?.user ? {
+ id: session.user.id,
+ email: session.user.email || '',
+ name: session.user.user_metadata?.name,
+ avatarUrl: session.user.user_metadata?.avatar_url
+ } : null);
  } else {
  // Use fallback authentication
  const { data: { session } } = await fallbackAuth.getSession();
@@ -57,7 +62,12 @@ export function useAuth() {
  let subscription;
  if (isSupabaseConfigured) {
  subscription = supabase.auth.onAuthStateChange((_event, session) => {
- setUser(session?.user ?? null);
+ setUser(session?.user ? {
+ id: session.user.id,
+ email: session.user.email || '',
+ name: session.user.user_metadata?.name,
+ avatarUrl: session.user.user_metadata?.avatar_url
+ } : null);
  });
  }
 
@@ -78,8 +88,18 @@ export function useAuth() {
  });
 
  if (error) throw error;
- setUser(data.user);
- return { user: data.user, error: null };
+ setUser(data.user ? {
+ id: data.user.id,
+ email: data.user.email || '',
+ name: data.user.user_metadata?.name,
+ avatarUrl: data.user.user_metadata?.avatar_url
+ } : null);
+ return { user: data.user ? {
+ id: data.user.id,
+ email: data.user.email || '',
+ name: data.user.user_metadata?.name,
+ avatarUrl: data.user.user_metadata?.avatar_url
+ } : null, error: null };
  } else {
  // Use fallback authentication
  const { user, error } = await fallbackAuth.signInWithEmail(email);
@@ -106,8 +126,18 @@ export function useAuth() {
  });
 
  if (error) throw error;
- setUser(data.user);
- return { user: data.user, error: null };
+ setUser(data.user ? {
+ id: data.user.id,
+ email: data.user.email || '',
+ name: data.user.user_metadata?.name,
+ avatarUrl: data.user.user_metadata?.avatar_url
+ } : null);
+ return { user: data.user ? {
+ id: data.user.id,
+ email: data.user.email || '',
+ name: data.user.user_metadata?.name,
+ avatarUrl: data.user.user_metadata?.avatar_url
+ } : null, error: null };
  } else {
  // Use fallback authentication
  const { user, error } = await fallbackAuth.signUp(email, password);

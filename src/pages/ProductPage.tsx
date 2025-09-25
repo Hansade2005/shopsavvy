@@ -125,7 +125,7 @@ export function ProductPage() {
 
  const calculateAverageRating = () => {
  if (reviews.length ===0) return0;
- const total = reviews.reduce((sum,) => sum + review.rating,0);
+ const total = reviews.reduce((sum,) => sum + reviews.rating,0);
  return total / reviews.length;
  };
 

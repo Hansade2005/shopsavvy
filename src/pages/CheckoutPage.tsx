@@ -481,10 +481,27 @@ export function CheckoutPage() {
  className={`px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
  >
  {loading ? (
- <svg className="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="002424">
- <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
- <path className="opacity-75" fill="currentColor" d="M412a880018-8V0C5.373005.373012h4zm25.291A7.9627.962001412H0c03.0421.1355.82437.938l3-2.647z"></path>
- </svg>
+ <svg
+  className="animate-spin h-5 w-5 mx-auto text-white"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 24 24"
+>
+  <circle
+    className="opacity-25"
+    cx="12"
+    cy="12"
+    r="10"
+    stroke="currentColor"
+    strokeWidth="4"
+  ></circle>
+  <path
+    className="opacity-75"
+    fill="currentColor"
+    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+  ></path>
+</svg>
+
  ) : (
  'Place Order'
  )}
@@ -523,7 +540,7 @@ export function CheckoutPage() {
  <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
  <div className="flex justify-between">
  <span className="text-gray-600">Subtotal</span>
- <span className="font-medium">${calculateSubtotal().to(2)}</span>
+ <span className="font-medium">${calculateSubtotal().toFixed(2)}</span>
  </div>
 
  <div className="flex justify-between">
@@ -543,7 +560,7 @@ export function CheckoutPage() {
 
  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
  <h3 className="text-lg font-medium text-gray-800 mb-4">Need Help?</h3>
- <p className="text-gray-600 mb-4">Call us at (123)456-7890 or email support@shopsavvy.com</p>
+ <p className="text-gray-60 mb-4">Call us at (123)456-7890 or email support@shopsavvy.com</p>
  <p className="text-gray-600">We're available24/7 to assist you with your purchase.</p>
  </div>
  </div>

@@ -12,11 +12,6 @@ interface Product {
  category: string;
  rating: number;
  stock: number;
- id: string;
- name: string;
- price: number;
- imageUrl: string;
- rating?: number;
 }
 
 interface FeaturedProductsProps {

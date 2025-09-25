@@ -71,7 +71,7 @@ export function AdminProductsPage() {
  const sortedProducts = [...filteredProducts].sort((a, b) => {
  if (a[sortField] < b[sortField]) return sortDirection === 'asc' ? -1 :1;
  if (a[sortField] > b[sortField]) return sortDirection === 'asc' ?1 : -1;
- return0;
+ return;
  });
 
  const paginatedProducts = sortedProducts.slice(
@@ -249,7 +249,7 @@ export function AdminProductsPage() {
  <td className="px-6 py-4 whitespace-nowrap">
  <div className="flex items-center">
  <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-md flex items-center justify-center">
- <ShoppingBag className="h-5 w-5 text-gray-400" />
+ <ShoppingBag className="-5 w-5 text-gray-400" />
  </div>
  <div className="ml-4">
  <div className="text-sm font-medium text-gray-900">{product.name}</div>
