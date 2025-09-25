@@ -237,7 +237,7 @@ export function CartPage() {
  <div className="border-t border-gray-200 pt-4 mt-2">
  <div className="flex justify-between">
  <span className="text-lg font-bold text-gray-800">Total</span>
- <span className="text-lg font-bold text-indigo-600">${calculateTotal().toFixed(2)}</span>
+ <span className="text-lg font-bold text-indigo-00">${calculateTotal().toFixed(2)}</span>
  </div>
  </div>
 
@@ -259,7 +259,7 @@ export function CartPage() {
  </div>
 
  {/* You May Also Like */}
- <div className="mt-16
+ <div className="mt-16">
  <h2 className="text-2xl font-bold text-gray-800 mb-6">You May Also Like</h2>
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
  {[...Array(4)].map((_, index) => (

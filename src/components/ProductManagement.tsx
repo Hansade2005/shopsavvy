@@ -226,7 +226,8 @@ export function ProductManagement() {
  stock_quantity:0,
  sku: '',
  is_active: true,
- created_at: new Date().toISOString()n })} className="p-6 space-y-6"
+ created_at: new Date().toISOString()
+ })} className="p-6 space-y-6"
  >
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div>
