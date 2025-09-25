@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 
 // Define theme types
  type Theme = 'light' | 'dark' | 'system';
@@ -7,6 +7,10 @@ import { useState, useEffect, createContext, useContext } from 'react';
  interface ThemeContextType {
  theme: Theme;
  setTheme: (theme: Theme) => void;
+ toggleTheme: () => void;
+ setLight: () => void;
+ setDark: () => void;
+ setSystem: () => void;
  resolvedTheme: 'light' | 'dark';
 }
 
@@ -71,10 +75,23 @@ import { useState, useEffect, createContext, useContext } from 'react';
  return () => mediaQuery.removeEventListener('change', handleChange);
  }, [theme]);
 
- return (
- <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
- {children}
- </ThemeContext.Provider>
+ // Utility functions
+ const toggleTheme = () => {
+ setTheme((prev) => {
+ if (prev === 'light') return 'dark';
+ if (prev === 'dark') return 'system';
+ return 'light';
+ });
+ };
+
+ const setLight = () => setTheme('light');
+ const setDark = () => setTheme('dark');
+ const setSystem = () => setTheme('system');
+
+ return React.createElement(
+ ThemeContext.Provider,
+ { value: { theme, setTheme, toggleTheme, setLight, setDark, setSystem, resolvedTheme } },
+ children
  );
 }
 
