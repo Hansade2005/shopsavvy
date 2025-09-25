@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate, Link } from 'react-router-dom';
+import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, ShoppingBag, Users, Package, Settings, LogOut, Menu, X, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -22,8 +22,8 @@ const navItems: NavItem[] = [
  icon: <ShoppingBag className="h-5 w-5" />,
  subItems: [
  { label: 'All Products', path: '/admin/products', icon: <ShoppingBag className="h-4 w-4" /> },
- { label: 'Add Product', path: '/admin/products/add', icon: <ShoppingBag className="h-4 w-4" /> },
- { label: 'Categories', path: '/admin/products/categories', icon: <ShoppingBag className="h-4 w-4" /> }
+ { label: 'Add Product', path: '/admin/products/add', icon: <Plus className="h-4 w-4" /> },
+ { label: 'Categories', path: '/admin/products/categories', icon: <List className="h-4 w-4" /> }
  ]
  },
  {
@@ -32,8 +32,8 @@ const navItems: NavItem[] = [
  icon: <Package className="h-5 w-5" />,
  subItems: [
  { label: 'All Orders', path: '/admin/orders', icon: <Package className="h-4 w-4" /> },
- { label: 'Pending Orders', path: '/admin/orders/pending', icon: <Package className="h-4 w-4" /> },
- { label: 'Completed Orders', path: '/admin/orders/completed', icon: <Package className="h-4 w-4" /> }
+ { label: 'Pending Orders', path: '/admin/orders/pending', icon: <Clock className="h-4 w-4" /> },
+ { label: 'Completed Orders', path: '/admin/orders/completed', icon: <Check className="h-4 w-4" /> }
  ]
  },
  {
@@ -52,6 +52,7 @@ export function AdminLayout() {
  const [sidebarOpen, setSidebarOpen] = useState(false);
  const [expandedItems, setExpandedItems] = useState<string[]>([]);
  const navigate = useNavigate();
+ const location = useLocation();
 
  useEffect(() => {
  // Check if user is admin
@@ -120,7 +121,7 @@ export function AdminLayout() {
  <li key={subItem.path}>
  <Link
  to={subItem.path}
- className="flex items-center px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+ className={`flex items-center px-4 py-2 rounded-lg ${location.pathname === subItem.path ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-100'} transition-colors`}
  >
  {subItem.icon}
  <span className="ml-3">{subItem.label}</span>
