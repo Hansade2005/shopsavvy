@@ -6,6 +6,14 @@ import { ProductCard } from './ProductCard';
 interface Product {
  id: string;
  name: string;
+ description: string;
+ price: number;
+ imageUrl: string;
+ category: string;
+ rating: number;
+ stock: number;
+ id: string;
+ name: string;
  price: number;
  imageUrl: string;
  rating?: number;

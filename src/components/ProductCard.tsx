@@ -54,7 +54,7 @@ export function ProductCard({
  </button>
  <button
  onClick={() => onAddToCart(product.id)}
- class="p-2 rounded-full bg-white/90 hover:bg-white transition-colors"
+ className="p-2 rounded-full bg-white/90 hover:bg-white transition-colors"
  >
  <ShoppingCart className="h-5 w-5 text-gray-800" />
  </button>

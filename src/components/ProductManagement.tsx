@@ -1,298 +1,244 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { motion } from 'framer-motion';
-import { Plus, Edit2, Trash2, Search, Loader2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, X } from 'lucide-react';
 
 interface Product {
  id: string;
  name: string;
  description: string;
  price: number;
- imageUrl: string;
- category: string;
- stock: number;
+ category_id: string;
+ stock_quantity: number;
+ sku: string;
+ is_active: boolean;
  created_at: string;
+}
+
+interface Category {
+ id: string;
+ name: string;
 }
 
 export function ProductManagement() {
  const [products, setProducts] = useState<Product[]>([]);
- const [loading,Loading] = useState(true);
- const [searchTerm, setSearchTerm] = useState('');
+ const [categories, setCategories] = useState<Category[]>([]);
+ const [loading, setLoading] = useState(true);
  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
- const [showAddForm, setShowAddForm] = useState(false);
+ const [showForm, setShowForm] = useState(false);
 
  useEffect(() => {
- fetchProducts();
+ const fetchData = async () => {
+ try {
+ setLoading(true);
+
+ // Fetch products
+ const { data: productsData } = await supabase
+ .from('products')
+ .select('*');
+
+ // Fetch categories
+ const { data: categoriesData } = await supabase
+ .from('categories')
+ .select('id, name');
+
+ setProducts(productsData || []);
+ setCategories(categoriesData || []);
+ } catch (error) {
+ console.error('Error fetching data:', error);
+ } finally {
+ setLoading(false);
+ }
+ };
+
+ fetchData();
  }, []);
 
- const fetchProducts = async () => {
- setLoading(true);
- const { data, error } = await supabase
- .from('products')
- .select('*')
- .order('created_at', { ascending: false });
-
- if (error) {
- console.error('Error fetching products:', error);
- } else {
- setProducts(data || []);
- }
- setLoading(false);
+ const handleEdit = (product: Product) => {
+ setEditingProduct(product);
+ setShowForm(true);
  };
 
- const handleAddProduct = async (product: Omit<Product, 'id' | 'created_at'>) => {
- const { data, error } = await supabase
- .from('products')
- .insert([product])
- .select()
- .single();
-
- if (error) {
- console.error('Error adding product:', error);
- } else {
- setProducts([data, ...products]);
- setShowAddForm(false);
- }
- };
-
- const handleUpdateProduct = async (product: Product) => {
- const { data, error } = await supabase
- .from('products')
- .update(product)
- .eq('id', product.id)
- .select()
- .single();
-
- if (error) {
- console.error('Error updating product:', error);
- } else {
- setProducts(products.map(p => p.id === product.id ? data : p));
- setEditingProduct(null);
- }
- };
-
- const handleDeleteProduct = async (id: string) => {
+ const handleDelete = async (id: string) => {
+ if (window.confirm('Are you sure you want to delete this product?')) {
+ try {
  const { error } = await supabase
  .from('products')
  .delete()
  .eq('id', id);
 
- if (error) {
+ if (error) throw error;
+
+ setProducts(products.filter(product => product.id !== id));
+ } catch (error) {
  console.error('Error deleting product:', error);
- } else {
- setProducts(products.filter(p => p.id !== id));
+ alert('Failed to delete product');
+ }
  }
  };
 
- const filteredProducts = products.filter(product =>
- product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
- product.description.toLowerCase().includes(searchTerm.toLowerCase())
+ const handleSubmit = async (e: React.FormEvent, product: Product) => {
+ e.preventDefault();
+ setLoading(true);
+
+ try {
+ if (editingProduct) {
+ // Update existing product
+ const { error } = await supabase
+ .from('products')
+ .update(product)
+ .eq('id', product.id);
+
+ if (error) throw error;
+
+ setProducts(products.map(p => p.id === product.id ? product : p));
+ } else {
+ // Create new product
+ const { data, error } = await supabase
+ .from('products')
+ .insert([product])
+ .select();
+
+ if (error) throw error;
+
+ if (data && data.length >0) {
+ setProducts([...products, data[0]]);
+ }
+ }
+
+ setShowForm(false);
+ setEditingProduct(null);
+ } catch (error) {
+ console.error('Error saving product:', error);
+ alert('Failed to save product');
+ } finally {
+ setLoading(false);
+ }
+ };
+
+ const Loading = () => {
+ return (
+ <div className="flex justify-center items-center h-full">
+ <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+ </div>
  );
+ };
+
+ if (loading) {
+ return <Loading />;
+ }
 
  return (
- <div className="container mx-auto px-4 py-8">
- <div className="flex justify-between items-center mb-6">
- <h1 className="text-3xl font-bold">Product Management</h1>
+ <div className="space-y-6">
+ <div className="flex justify-between items-center">
+ <h1 className="text-2xl font-bold text-gray-800">Product Management</h1>
  <button
- onClick={() => setShowAddForm(true)}
- className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+ onClick={() => {
+ setEditingProduct(null);
+ setShowForm(true);
+ }}
+ className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
  >
- <Plus className="h-5 w-5 mr-2" />
+ <Plus className="h-4 w-4 mr-2" />
  Add Product
  </button>
  </div>
 
- <div className="mb-6">
- <div className="relative">
- <input
- type="text"
- placeholder="Search products..."
- value={searchTerm}
- onChange={(e) => setSearchTerm(e.target.value)}
- className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
- />
- <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
- </div>
- </div>
-
- {loading ? (
- <div className="flex justify-center items-center py-12">
- <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
- </div>
- ) : (
- <div className="overflow-x-auto bg-white rounded-lg shadow">
+ {/* Product Table */}
+ <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+ <div className="overflow-x-auto">
  <table className="min-w-full divide-y divide-gray-200">
  <thead className="bg-gray-50">
  <tr>
- <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+ <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
  </tr>
  </thead>
  <tbody className="bg-white divide-y divide-gray-200">
- {filteredProducts.map((product) => (
- <motion.tr
- key={product.id}
- initial={{ opacity:0 }}
- animate={{ opacity:1 }}
- transition={{ duration:0.3 }}
- >
+ {products.length ===0 ? (
+ <tr>
+ <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+ No products found
+ </td>
+ </tr>
+ ) : (
+ products.map((product) => (
+ <tr key={product.id} className="hover:bg-gray-50">
+ <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
+ <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+ {categories.find(c => c.id === product.category_id)?.name || 'Uncategorized'}
+ </td>
+ <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price.toFixed(2)}</td>
+ <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.stock_quantity}</td>
  <td className="px-6 py-4 whitespace-nowrap">
- <img
- src={product.imageUrl}
- alt={product.name}
- className="h-12 w-12 object-contain rounded-md"
- />
- </td>
- <td className="px-6 py-4 whitespace-nowrap">
- <div className="text-sm font-medium text-gray-900">{product.name}</div>
- <div className="text-sm text-gray-500">{product.description}</div>
- </td>
- <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
- {product.category}
- </td>
- <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
- ${product.price.toFixed(2)}
- </td>
- <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
- {product.stock}
+ <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+ {product.is_active ? 'Active' : 'Inactive'}
+ </span>
  </td>
  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
  <button
- onClick={() => setEditingProduct(product)}
+ onClick={() => handleEdit(product)}
  className="text-indigo-600 hover:text-indigo-900 mr-4"
  >
- <Edit2 className="h-5 w-5" />
+ <Edit2 className="h-4 w-4" />
  </button>
  <button
- onClick={() => handleDeleteProduct(product.id)}
+ onClick={() => handleDelete(product.id)}
  className="text-red-600 hover:text-red-900"
  >
- <Trash2 className="h-5 w-5" />
+ <Trash2 className="h-4 w-4" />
  </button>
  </td>
- </motion.tr>
- ))}
+ </tr>
+ ))
+ )}
  </tbody>
  </table>
  </div>
- )}
-
- {/* Add Product Modal */}
- {showAddForm && (
- <ProductForm
- onSubmit={handleAddProduct}
- onClose={() => setShowAddForm(false)}
- />
- )}
-
- {/* Edit Product Modal */}
- {editingProduct && (
- <ProductForm
- product={editingProduct}
- onSubmit={handleUpdateProduct}
- onClose={() => setEditingProduct(null)}
- />
- )}
  </div>
- );
-}
 
-interface ProductFormProps {
- product?: Product;
- onSubmit: (product: Omit<Product, 'id' | 'created_at'>) => void;
- onClose: () => void;
-}
-
-function ProductForm({ product, onSubmit, onClose }: ProductFormProps) {
- const [formData, setFormData] = useState({
- name: product?.name || '',
- description: product?.description || '',
- price: product?.price ||0,
- imageUrl: product?.imageUrl || '',
- category: product?.category || '',
- stock: product?.stock ||0,
- });
-
- const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
- const { name, value } = e.target;
- setFormData(prev => ({ ...prev, [name]: value }));
- };
-
- const handleSubmit = (e: React.FormEvent) => {
- e.preventDefault();
- onSubmit(formData);
- };
-
- return (
- <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
- <motion.div
- initial={{ opacity:0, scale:0.9 }}
- animate={{ opacity:1, scale:1 }}
- exit={{ opacity:0, scale:0.9 }}
- className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6"
- >
- <div className="flex justify-between items-center mb-6">
- <h2 className="text-xl font-bold">
- {product ? 'Edit Product' : 'Add New Product'}
+ {/* Product Form Modal */}
+ {showForm && (
+ <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+ <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+ <div className="flex justify-between items-center p-6 border-b border-gray-200">
+ <h2 className="text-xl font-bold text-gray-800">
+ {editingProduct ? 'Edit Product' : 'Add New Product'}
  </h2>
  <button
- onClick={onClose}
- className="text-gray-500 hover:text-gray-700"
+ onClick={() => setShowForm(false)}
+ className="p-1 rounded-full hover:bg-gray-100 transition-colors"
  >
- <X className="h-6 w-6" />
+ <X className="h-5 w-5" />
  </button>
  </div>
 
- <form onSubmit={handleSubmit} className="space-y-4">
+ <form
+ onSubmit={(e) => handleSubmit(e, editingProduct || {
+ id: '',
+ name: '',
+ description: '',
+ price:0,
+ category_id: '',
+ stock_quantity:0,
+ sku: '',
+ is_active: true,
+ created_at: new Date().toISOString()n })} className="p-6 space-y-6"
+ >
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div>
  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
  Product Name
  </label>
  <input
  id="name"
- name="name"
  type="text"
- value={formData.name}
- onChange={handleChange}
+ defaultValue={editingProduct?.name || ''}
  required
- className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
- />
- </div>
-
- <div>
- <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
- Description
- </label>
- <textarea
- id="description"
- name="description"
- value={formData.description}
- onChange={handleChange}
- required
- rows={3}
- className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
- />
- </div>
-
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
- <div>
- <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
- Price
- </label>
- <input
- id="price"
- name="price"
- type="number"
- value={formData.price}
- onChange={handleChange}
- required
- min="0"
- step="0.01"
- className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+ className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
  />
  </div>
 
@@ -300,66 +246,98 @@ function ProductForm({ product, onSubmit, onClose }: ProductFormProps) {
  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
  Category
  </label>
- <input
+ <select
  id="category"
- name="category"
- type="text"
- value={formData.category}
- onChange={handleChange}
+ defaultValue={editingProduct?.category_id || ''}
  required
- className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+ className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+ >
+ <option value="">Select a category</option>
+ {categories.map(category => (
+ <option key={category.id} value={category.id}>{category.name}</option>
+ ))}
+ </select>
+ </div>
+
+ <div>
+ <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+ Price
+ </label>
+ <input
+ id="price"
+ type="number"
+ step="0.01"
+ defaultValue={editingProduct?.price || ''}
+ required
+ className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
  />
  </div>
 
  <div>
  <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-1">
- Stock
+ Stock Quantity
  </label>
  <input
  id="stock"
- name="stock"
  type="number"
- value={formData.stock}
- onChange={handleChange}
+ defaultValue={editingProduct?.stock_quantity || ''}
  required
- min="0"
- className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+ className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
  />
  </div>
- </div>
 
- <div>
- <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
- Image URL
+ <div className="md:col-span-2">
+ <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+ Description
  </label>
- <input
- id="imageUrl"
- name="imageUrl"
- type="text"
- value={formData.imageUrl}
- onChange={handleChange}
- required
- className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
- />
+ <textarea
+ id="description"
+ rows={4}
+ defaultValue={editingProduct?.description || ''}
+ className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+ ></textarea>
  </div>
 
- <div className="flex justify-end space-x-3">
+ <div className="md:col-span-2 flex items-center">
+ <input
+ id="is_active"
+ type="checkbox"
+ defaultChecked={editingProduct?.is_active || true}
+ className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+ />
+ <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">
+ Active Product
+ </label>
+ </div>
+ </div>
+
+ <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
  <button
  type="button"
- onClick={onClose}
- className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+ onClick={() => setShowForm(false)}
+ className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
  >
  Cancel
  </button>
  <button
  type="submit"
- className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+ disabled={loading}
+ className={`px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
  >
- {product ? 'Update Product' : 'Add Product'}
+ {loading ? (
+ <svg className="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="002424">
+ <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+ <path className="opacity-75" fill="currentColor" d="M412a880018-8V0C5.373005.373012h4zm25.291A7.9627.962001412H0c03.0421.1355.82437.938l3-2.647z"></path>
+ </svg>
+ ) : (
+ editingProduct ? 'Update Product' : 'Add Product'
+ )}
  </button>
  </div>
  </form>
- </motion.div>
+ </div>
+ </div>
+ )}
  </div>
  );
 }

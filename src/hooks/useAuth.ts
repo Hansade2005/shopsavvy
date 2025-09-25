@@ -22,8 +22,8 @@ export function useAuth() {
  useEffect(() => {
  const checkSupabaseConfig = () => {
  // Check if Supabase is properly configured
- const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
- const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
  setIsSupabaseConfigured(!!supabaseUrl && !!supabaseKey);
  };
