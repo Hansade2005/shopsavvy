@@ -5,17 +5,6 @@ import { ShoppingCart, Truck, ShieldCheck, Headphones, ChevronRight, Star } from
 import { FeaturedProducts } from '@/components/FeaturedProducts';
 import { NewsletterSignup } from '@/components/NewsletterSignup';
 
-interface Product {
- id: string;
- name: string;
- description: string;
- price: number;
- imageUrl: string;
- category: string;
- rating: number;
- stock: number;
-}
-
 interface Feature {
  icon: React.ReactNode;
  title: string;
