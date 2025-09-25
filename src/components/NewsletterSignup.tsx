@@ -79,7 +79,7 @@ export function NewsletterSignup() {
  </button>
  </form>
  )}
- </motion.div>
+ </div>
  </div>
  </section>
  );

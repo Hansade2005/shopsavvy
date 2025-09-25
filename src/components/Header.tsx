@@ -196,7 +196,7 @@ export function Header() {
  <div className="container mx-auto px-4">
  <div className="flex items-center justify-between h-16">
  {/* Desktop Navigation */}
-div className="hidden md:flex items-center space-x-8">
+ <div className="hidden md:flex items-center space-x-8">
  <Link to="/" className="text-2xl font-bold text-indigo-600">
  ShopSavvy
  </Link>
