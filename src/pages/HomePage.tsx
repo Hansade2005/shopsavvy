@@ -55,7 +55,7 @@ const testimonials: Testimonial[] = [
  {
  name: 'Emily Rodriguez',
  role: 'Fashion Lover',
- content: 'I found some amazing fashion items here that I didn't know existed. The prices are reasonable and the quality is top-notch. Will definitely shop here again.',
+ content: 'I found some amazing fashion items here that I didn\'t know existed. The prices are reasonable and the quality is top-notch. Will definitely shop here again.',
  avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
  rating:5
  }
