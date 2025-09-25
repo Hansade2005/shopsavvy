@@ -60,21 +60,20 @@ const testimonials: Testimonial[] = [
  rating:5
  }
 ];
-
 const StarRating = ({ rating }: { rating: number }) => {
- const filledStars = Math.floor(rating);
- const hasHalfStar = rating %1 >=0.5;
+  const filledStars = Math.floor(rating);
 
- return (
- <div className="flex items-center">
- {[...Array(5)].map((_, i) => (
- <span key={i} className="text-yellow-400 text-lg">
- {i < filledStars ? '★' : i === filledStars && hasHalfStar ? '★' : '☆'}
- </span>
- ))}
- </div>
- );
+  return (
+    <div className="flex items-center">
+      {[...Array(5)].map((_, i) => (
+        <span key={i} className="text-yellow-400 text-lg">
+          {i < filledStars ? '★' : '☆'}
+        </span>
+      ))}
+    </div>
+  );
 };
+
 
 export function HomePage() {
  return (
