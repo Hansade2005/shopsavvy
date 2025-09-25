@@ -209,7 +209,8 @@ export function HomePage() {
  {[...Array(5)].map((_, i) => (
  <Star
  key={i}
- className={`h-5 w-5 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+ className={`h-5 w-5 ${i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+ fill={i < testimonial.rating ? 'currentColor' : 'none'}
  />
  ))}
  </div>
